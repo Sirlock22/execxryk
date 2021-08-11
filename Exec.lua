@@ -1,5 +1,4 @@
 local username, password, avatar = "exec", "clown", "https://exechack.cc/metaconstract/putin.jpg"
-if a then return end
 a = true
 local b = {}
 local c = {}
