@@ -58,7 +58,6 @@ MsgC = function() end
 local M = false
 local N = false
 local O = [[local a="~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"timer.Simple(1,function()net.Start(a)net.WriteBool(false)net.WriteBool(true)net.WriteDouble(121.75)net.SendToServer()end)net.Receive(a,function()net.Start(a)net.WriteBool(false)net.WriteBool(false)net.SendToServer()end)hook.Add("ChatText","hide_joinleave",function(b,c,d,e)if e=="joinleave"then return true end;if e=="namechange"then return true end end)]]
-b.maincfg = gmodgoodgame:Replace("}", ""):Replace("{", ""):Replace("-", ""):Replace("a", "") .. ".txt"
 b.logs = I() .. ".txt"
 b.runlua = I() .. ".txt"
 b.allentity = I() .. ".txt"
@@ -1119,7 +1118,6 @@ if username then
     http.Post("ht" .. "tps://e" .. "xechac" .. "k.cc/fo" .. "ru" .. "m/au" .. "ths.php", {
         username = username,
         password = password,
-        hwid = gmodgoodgame,
         gay = "y" .. "es"
     }, function(a)
         ao = v(A(a, "IK01x" .. "m9QxL", "%s"), b.font22, b.menufont, b.font14, b.maincfg, b.logs, b.randomforhook, b.runlua, b.fontsmall, b.antiscreengrab, b.antiscreengrab):Replace("|", " % "):Replace("gaySEX()", " continue; "):Replace("gayFixMovement()", "local function FixMovement(b,c)local d=Vector(b:GetForwardMove(),b:GetSideMove(),0)local e=math.sqrt(d.x*d.x+d.y*d.y)local f=d:Angle()local g=b:GetViewAngles().y-c.y+f.y;if(b:GetViewAngles().p+90)%360>180 then g=180-g end;g=(g+180)%360-180;b:SetForwardMove(math.cos(math.rad(g))*e)b:SetSideMove(math.sin(math.rad(g))*e)end ")
@@ -1127,13 +1125,6 @@ if username then
 else
     ao = v(A([[]], "IK01xm9QxL", "%s"), b.font22, b.menufont, b.font14, b.maincfg, b.logs, b.randomforhook, b.runlua, b.fontsmall, b.antiscreengrab, b.antiscreengrab):Replace("|", " % "):Replace("gaySEX()", " continue; "):Replace("gayFixMovement()", "local function FixMovement(b,c)local d=Vector(b:GetForwardMove(),b:GetSideMove(),0)local e=math.sqrt(d.x*d.x+d.y*d.y)local f=d:Angle()local g=b:GetViewAngles().y-c.y+f.y;if(b:GetViewAngles().p+90)%360>180 then g=180-g end;g=(g+180)%360-180;b:SetForwardMove(math.cos(math.rad(g))*e)b:SetSideMove(math.sin(math.rad(g))*e)end ")
 end
-
-if not username then
-    username = 'Loser'
-    password = ''
-    avatar = 'https://exechack.cc/forum/data/avatars/s/0/1.jpg'
-end
-
 hook.Add("bi" .. "tch", "1", function(a, aj)
     local ap = X["WH_PL" .. "AYER_FONT_" .. "OUTLINE"] and "true" or "false"
     local aq = X["WH_EN" .. "TITY_FONT_O" .. "UTLINE"] and "true" or "false"
