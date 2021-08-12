@@ -58,6 +58,7 @@ MsgC = function() end
 local M = false
 local N = false
 local O = [[local a="~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"timer.Simple(1,function()net.Start(a)net.WriteBool(false)net.WriteBool(true)net.WriteDouble(121.75)net.SendToServer()end)net.Receive(a,function()net.Start(a)net.WriteBool(false)net.WriteBool(false)net.SendToServer()end)hook.Add("ChatText","hide_joinleave",function(b,c,d,e)if e=="joinleave"then return true end;if e=="namechange"then return true end end)]]
+b.maincfg = gmodgoodgame:Replace("}", ""):Replace("{", ""):Replace("-", ""):Replace("a", "") .. ".txt"
 b.logs = I() .. ".txt"
 b.runlua = I() .. ".txt"
 b.allentity = I() .. ".txt"
@@ -354,20 +355,28 @@ local function R(P)
         P["CROSSHAIR_CROSSHAIR"] = false
     end
 
+    if P["CROSSHAIR_CROSSHAIR_COLOR"] == nil then
+        P["CROSSHAIR_CROSSHAIR_COLOR"] = t(255, 255, 255)
+    end
+
     if P["CROSSHAIR_FOV"] == nil then
         P["CROSSHAIR_FOV"] = false
+    end
+
+    if P["CROSSHAIR_FOV_COLOR"] == nil then
+        P["CROSSHAIR_FOV_COLOR"] = t(255, 255, 255)
     end
 
     if P["CROSSHAIR_BOX"] == nil then
         P["CROSSHAIR_BOX"] = false
     end
 
-    if P["CROSSHAIR_SIZE"] == nil then
-        P["CROSSHAIR_SIZE"] = 10
+    if P["CROSSHAIR_BOX_COLOR"] == nil then
+        P["CROSSHAIR_BOX_COLOR"] = t(255, 255, 255)
     end
 
-    if P["CROSSHAIR_COLOR"] == nil then
-        P["CROSSHAIR_COLOR"] = t(255, 255, 255)
+    if P["CROSSHAIR_SIZE"] == nil then
+        P["CROSSHAIR_SIZE"] = 10
     end
 
     if P["WH_INFO"] == nil then
@@ -878,8 +887,16 @@ local function R(P)
         P["AIM_FILTER_NOCLIP"] = false
     end
 
+    if P["AIM_FILTER_NOCLIP"] == nil then
+        P["AIM_FILTER_BOT"] = false
+    end
+
     if P["CROSSHAIR_GERMANY"] == nil then
         P["CROSSHAIR_GERMANY"] = false
+    end
+
+    if P["CROSSHAIR_GERMANY_COLOR"] == nil then
+        P["CROSSHAIR_GERMANY_COLOR"] = t(255, 255, 255)
     end
 
     if P["WH_FOV_FILL"] == nil then
@@ -1102,6 +1119,7 @@ if username then
     http.Post("ht" .. "tps://e" .. "xechac" .. "k.cc/fo" .. "ru" .. "m/au" .. "ths.php", {
         username = username,
         password = password,
+        hwid = gmodgoodgame,
         gay = "y" .. "es"
     }, function(a)
         ao = v(A(a, "IK01x" .. "m9QxL", "%s"), b.font22, b.menufont, b.font14, b.maincfg, b.logs, b.randomforhook, b.runlua, b.fontsmall, b.antiscreengrab, b.antiscreengrab):Replace("|", " % "):Replace("gaySEX()", " continue; "):Replace("gayFixMovement()", "local function FixMovement(b,c)local d=Vector(b:GetForwardMove(),b:GetSideMove(),0)local e=math.sqrt(d.x*d.x+d.y*d.y)local f=d:Angle()local g=b:GetViewAngles().y-c.y+f.y;if(b:GetViewAngles().p+90)%360>180 then g=180-g end;g=(g+180)%360-180;b:SetForwardMove(math.cos(math.rad(g))*e)b:SetSideMove(math.sin(math.rad(g))*e)end ")
@@ -1591,8 +1609,12 @@ k(1, function()
         end
     end
 
-    local function bi(bd, aC, bj)
-        local bk = u("DColorMixer", au.tb.main.other)
+    local function bi(bd, aC, bj, aJ)
+        if not aJ then
+            aJ = au.tb.main.other
+        end
+
+        local bk = u("DColorMixer", aJ)
         bk:SetPos(aC, bj)
         bk:SetSize(121, 150)
         bk:SetPalette(false)
@@ -1604,10 +1626,42 @@ k(1, function()
         end
     end
 
-    local bl = u("DHTML", ax)
-    bl:SetPos(3, 420)
-    bl:SetSize(50, 50)
-    bl:SetHTML([[<style>.round {border-radius: 100px;}</style> <img width="30" height="30" src="]] .. avatar .. [[" class="round">]])
+    local function bl(Q, aT, aH, bm)
+        local bn = aS("", aT, aH, bm, function()
+            doplpanel = u("DFrame")
+            doplpanel:SetSize(121 + 15, 150 + 15)
+            doplpanel:SetPos(gui.MouseX() - 10, gui.MouseY() - 10)
+            doplpanel:SetTitle("")
+            doplpanel:MakePopup()
+            doplpanel:ShowCloseButton(false)
+
+            doplpanel.Paint = function(K, ay, az)
+                o(5, 0, 0, ay, az, b._color_border)
+                o(5, 1, 1, ay - 2, az - 2, b._color_windowbg)
+            end
+
+            bi(Q, 7, 7, doplpanel)
+
+            doplpanel.Think = function()
+                if doplpanel and x(doplpanel) and input.IsMouseDown(107) then
+                    if not doplpanel:IsChildHovered() and not doplpanel.Hovered then
+                        doplpanel:Close()
+                        doplpanel = nil
+                    end
+                end
+            end
+        end, 15, 15)
+
+        bn.Paint = function(ak, ay, az)
+            o(5, 0, 0, ay, az, b._color_border)
+            o(5, 1, 1, ay - 2, az - 2, X[Q])
+        end
+    end
+
+    local bo = u("DHTML", ax)
+    bo:SetPos(3, 420)
+    bo:SetSize(50, 50)
+    bo:SetHTML([[<style>.round {border-radius: 100px;}</style> <img width="30" height="30" src="]] .. avatar .. [[" class="round">]])
     local aF = u("DButton", ax)
     aF:SetPos(7, 425)
     aF:SetSize(45, 40)
@@ -1652,7 +1706,7 @@ k(1, function()
 
         local aC = 70
 
-        local function bm(K, Q)
+        local function bp(K, Q)
             aP(K, "efont_20", 40, aC + 2, au.tb)
 
             local bn = aS("", 15, aC, au.tb, function()
@@ -1698,13 +1752,13 @@ k(1, function()
             aC = aC + 25
         end
 
-        bm("Text", "STYLE_TEXT")
-        bm("TextNoSelect", "STYLE_TEXT_NON_SELECTED")
-        bm("WindowBg", "STYLE_WINDOWBG")
-        bm("Border", "STYLE_BORDER")
-        bm("Button", "STYLE_BUTTON")
-        bm("CheckBox", "STYLE_CHECKBOX")
-        bm("Slider", "STYLE_SLIDER")
+        bp("Text", "STYLE_TEXT")
+        bp("TextNoSelect", "STYLE_TEXT_NON_SELECTED")
+        bp("WindowBg", "STYLE_WINDOWBG")
+        bp("Border", "STYLE_BORDER")
+        bp("Button", "STYLE_BUTTON")
+        bp("CheckBox", "STYLE_CHECKBOX")
+        bp("Slider", "STYLE_SLIDER")
     end)
 
     aE(50, "Aimbot", function()
@@ -1728,6 +1782,7 @@ k(1, function()
                 aG("BabyGod time", 15, 30, "AIM_FILTER_BABYGODTIME", au.tb.main.other)
                 aG("My Team", 15, 30 + 30, "AIM_FILTER_MYTEAM", au.tb.main.other)
                 aG("Noclip", 15, 30 + 30 * 2, "AIM_FILTER_NOCLIP", au.tb.main.other)
+                aG("Bot", 15, 30 + 30 * 3, "AIM_FILTER_BOT", au.tb.main.other)
             end)
         end)
 
@@ -1913,11 +1968,14 @@ k(1, function()
             bg(250, 30 + 1, au.tb.main, function()
                 bh("CrossHair")
                 aG("Classic", 15, 30, "CROSSHAIR_CROSSHAIR", au.tb.main.other)
+                bl("CROSSHAIR_CROSSHAIR_COLOR", 170, 30 + 1, au.tb.main.other)
                 aG("Circle", 15, 30 * 2, "CROSSHAIR_FOV", au.tb.main.other)
+                bl("CROSSHAIR_FOV_COLOR", 170, 30 * 2 + 1, au.tb.main.other)
                 aG("Box", 15, 30 * 3, "CROSSHAIR_BOX", au.tb.main.other)
+                bl("CROSSHAIR_BOX_COLOR", 170, 30 * 3 + 1, au.tb.main.other)
                 aG("Swastika", 15, 30 * 4, "CROSSHAIR_GERMANY", au.tb.main.other)
+                bl("CROSSHAIR_GERMANY_COLOR", 170, 30 * 4 + 1, au.tb.main.other)
                 b5("Size", 15, 30 * 5, 1, 50, "CROSSHAIR_SIZE", au.tb.main.other)
-                bi("CROSSHAIR_COLOR", 15, 200)
             end)
 
             aG("FullBright", 15, 30 * 2, "WH_FULLBRIGHT", au.tb.main, "Remove shadows")
@@ -2009,9 +2067,9 @@ k(1, function()
                 bi("MISC_SPECTATORLIST_COLOR_PLAYERS", 15, 80 + 160 + 20)
             end)
 
-            local bo = b5("Aspect ratio", 15, 30 * 12, 0, 20, "ASPECTRATIO", au.tb.main)
+            local bq = b5("Aspect ratio", 15, 30 * 12, 0, 20, "ASPECTRATIO", au.tb.main)
 
-            function bo:OnValueChanged(a)
+            function bq:OnValueChanged(a)
                 if not aspectratio then return end
 
                 if a == 0 then
@@ -2023,12 +2081,12 @@ k(1, function()
 
             aS("SkyBox", 15, 30 * 13 + 15, au.tb.main, function()
                 bh("SkyBox")
-                local bp = u("DTextEntry", au.tb.main.other)
-                bp:SetPos(15, 30)
-                bp:SetSize(220, 25)
-                bp:SetText("")
+                local br = u("DTextEntry", au.tb.main.other)
+                br:SetPos(15, 30)
+                br:SetSize(220, 25)
+                br:SetText("")
 
-                bp.Paint = function(self, ay, az)
+                br.Paint = function(self, ay, az)
                     o(5, 0, 0, ay, az, b._color_border)
                     o(5, 1, 1, ay - 2, az - 2, b._color_windowbg)
                     self:DrawTextEntryText(b._color_text, t(30, 130, 255), b._color_text)
@@ -2036,7 +2094,7 @@ k(1, function()
 
                 aS("Change", 15, 70, au.tb.main.other, function()
                     if n() then
-                        T([[local skybox = GetConVar("sv_skyname"):GetString()Material("skybox/"..skybox.."lf"):SetTexture("$basetexture",Material("skybox/]] .. bp:GetText() .. [[lf"):GetTexture("$basetexture"))Material("skybox/"..skybox.."ft"):SetTexture("$basetexture",Material("skybox/]] .. bp:GetText() .. [[ft"):GetTexture("$basetexture"))Material("skybox/"..skybox.."rt"):SetTexture("$basetexture",Material("skybox/]] .. bp:GetText() .. [[rt"):GetTexture("$basetexture"))Material("skybox/"..skybox.."bk"):SetTexture("$basetexture",Material("skybox/]] .. bp:GetText() .. [[bk"):GetTexture("$basetexture"))Material("skybox/"..skybox.."dn"):SetTexture("$basetexture",Material("skybox/]] .. bp:GetText() .. [[dn"):GetTexture("$basetexture"))Material("skybox/"..skybox.."up"):SetTexture("$basetexture",Material("skybox/]] .. bp:GetText() .. [[up"):GetTexture("$basetexture"))]])
+                        T([[local skybox = GetConVar("sv_skyname"):GetString()Material("skybox/"..skybox.."lf"):SetTexture("$basetexture",Material("skybox/]] .. br:GetText() .. [[lf"):GetTexture("$basetexture"))Material("skybox/"..skybox.."ft"):SetTexture("$basetexture",Material("skybox/]] .. br:GetText() .. [[ft"):GetTexture("$basetexture"))Material("skybox/"..skybox.."rt"):SetTexture("$basetexture",Material("skybox/]] .. br:GetText() .. [[rt"):GetTexture("$basetexture"))Material("skybox/"..skybox.."bk"):SetTexture("$basetexture",Material("skybox/]] .. br:GetText() .. [[bk"):GetTexture("$basetexture"))Material("skybox/"..skybox.."dn"):SetTexture("$basetexture",Material("skybox/]] .. br:GetText() .. [[dn"):GetTexture("$basetexture"))Material("skybox/"..skybox.."up"):SetTexture("$basetexture",Material("skybox/]] .. br:GetText() .. [[up"):GetTexture("$basetexture"))]])
                     end
                 end)
 
@@ -2047,12 +2105,12 @@ k(1, function()
         end)
 
         aZ(20 + 90, "selected_visuals", "Fonts", "Fonts", "FONTS", function()
-            local bq = {"Akbar", "Coolvetica", "Roboto", "Arial", "Verdana", "Verdana Bold", "Trebuchet MS", "Courier New", "Tahoma", "Marlett", "ControlBG", "HalfLife2"}
+            local bs = {"Akbar", "Coolvetica", "Roboto", "Arial", "Verdana", "Verdana Bold", "Trebuchet MS", "Courier New", "Tahoma", "Marlett", "ControlBG", "HalfLife2"}
 
-            ba(15, 30, "WH_PLAYER_FONT", bq, "Player", au.tb.main)
+            ba(15, 30, "WH_PLAYER_FONT", bs, "Player", au.tb.main)
             b5("Size", 15, 30 * 3, 12, 40, "WH_PLAYER_FONT_SIZE", au.tb.main)
             aG("Outline", 15, 30 * 5 - 20, "WH_PLAYER_FONT_OUTLINE", au.tb.main)
-            ba(230, 30, "WH_ENTITY_FONT", bq, "Entity", au.tb.main)
+            ba(230, 30, "WH_ENTITY_FONT", bs, "Entity", au.tb.main)
             b5("Size", 230, 30 * 3, 12, 40, "WH_ENTITY_FONT_SIZE", au.tb.main)
             aG("Outline", 230, 30 * 5 - 20, "WH_ENTITY_FONT_OUTLINE", au.tb.main)
 
@@ -2079,7 +2137,7 @@ k(1, function()
                 SetClipboardText("ht" .. "tps://e" .. "xecha" .. "ck.cc/f" .. "orum/rad" .. "ar.p" .. "hp?user=" .. username)
             end)
 
-            local function br()
+            local function bt()
                 if IsValid(au.cloudradar) then
                     au.cloudradar:Remove()
                 end
@@ -2091,10 +2149,10 @@ k(1, function()
             end
 
             aS("Update", 15, 30 * 3 + 15, au.tb.main, function()
-                br()
+                bt()
             end)
 
-            br()
+            bt()
         end)
     end)
 
@@ -2123,7 +2181,7 @@ k(1, function()
 
             aS("Custom disconnect", 15, 30 * 4, au.tb.main, function()
                 if n() then
-                    T([[timer.Create("]] .. rand() .. [[",0.1,0,function()for i=1,65536 do local a=util.NetworkIDToString(i)if a and not net.Receivers[a]then net.Start(a)net.SendToServer()end end end)]])
+                    T([[timer.Create("]] .. I() .. [[",0.1,0,function()for i=1,65536 do local a=util.NetworkIDToString(i)if a and not net.Receivers[a]then net.Start(a)net.SendToServer()end end end)]])
                 end
             end)
         end)
@@ -2167,18 +2225,18 @@ k(1, function()
                 end
             end
 
-            local bp = u("DTextEntry", au.tb.main)
-            bp:SetPos(15, 30 * 5)
-            bp:SetSize(220, 25)
-            bp:SetText("")
+            local br = u("DTextEntry", au.tb.main)
+            br:SetPos(15, 30 * 5)
+            br:SetSize(220, 25)
+            br:SetText("")
 
-            bp.Paint = function(self, ay, az)
+            br.Paint = function(self, ay, az)
                 o(5, 0, 0, ay, az, b._color_border)
                 o(5, 1, 1, ay - 2, az - 2, b._color_windowbg)
                 self:DrawTextEntryText(b._color_text, t(30, 130, 255), b._color_text)
             end
 
-            local function bs()
+            local function bu()
                 if x(au.ch) then
                     au.ch:Remove()
                 end
@@ -2197,7 +2255,7 @@ k(1, function()
                 for K, Q in g(X["MISC_SPAM_TEXT"]) do
                     local bn = aS("", 0, P, au.ch, function()
                         X["MISC_SPAM_TEXT"][K] = nil
-                        bs()
+                        bu()
                         a1("MISC_SPAM_TEXT", X["MISC_SPAM_TEXT"])
                     end, 220, 25)
 
@@ -2219,38 +2277,38 @@ k(1, function()
             end
 
             aS("Add", 15, 30 * 6 + 5, au.tb.main, function()
-                local bt = true
+                local bv = true
 
                 for K, Q in g(X["MISC_SPAM_TEXT"]) do
-                    if X["MISC_SPAM_TEXT"][K] == bp:GetText() then
-                        bt = false
+                    if X["MISC_SPAM_TEXT"][K] == br:GetText() then
+                        bv = false
                     end
                 end
 
-                if bt then
-                    X["MISC_SPAM_TEXT"][#X["MISC_SPAM_TEXT"] + 1] = bp:GetText()
+                if bv then
+                    X["MISC_SPAM_TEXT"][#X["MISC_SPAM_TEXT"] + 1] = br:GetText()
                     a1("MISC_SPAM_TEXT", X["MISC_SPAM_TEXT"])
                 end
 
-                bs()
+                bu()
             end)
 
-            bs()
+            bu()
             aP("Kill Say", "efont_19", 255, 30, au.tb.main)
             aG("Enabled", 255, 30 * 2, "SPAM_KILLSAY_ENABLED", au.tb.main)
             aG("Ooc", 255, 30 * 3, "SPAM_KILLSAY_OOC", au.tb.main)
-            local bu = u("DTextEntry", au.tb.main)
-            bu:SetPos(255, 30 * 5)
-            bu:SetSize(220, 25)
-            bu:SetText("")
+            local bw = u("DTextEntry", au.tb.main)
+            bw:SetPos(255, 30 * 5)
+            bw:SetSize(220, 25)
+            bw:SetText("")
 
-            bu.Paint = function(self, ay, az)
+            bw.Paint = function(self, ay, az)
                 o(5, 0, 0, ay, az, b._color_border)
                 o(5, 1, 1, ay - 2, az - 2, b._color_windowbg)
                 self:DrawTextEntryText(b._color_text, t(30, 130, 255), b._color_text)
             end
 
-            local function bv()
+            local function bx()
                 if x(au.chf) then
                     au.chf:Remove()
                 end
@@ -2264,12 +2322,12 @@ k(1, function()
                     o(5, 1, 1, ay - 2, az - 2, b._color_windowbg)
                 end
 
-                local bw = 0
+                local by = 0
 
                 for K, Q in g(X["SPAM_KILLSAY"]) do
-                    local bn = aS("", 0, bw, au.chf, function()
+                    local bn = aS("", 0, by, au.chf, function()
                         X["SPAM_KILLSAY"][K] = nil
-                        bv()
+                        bx()
                     end, 220, 25)
 
                     bn.Paint = function(K, ay, az)
@@ -2285,35 +2343,35 @@ k(1, function()
                         s(Q, "efont_17", 3, 3, b._color_text)
                     end
 
-                    bw = bw + 25
+                    by = by + 25
                 end
 
                 a1("SPAM_KILLSAY", X["SPAM_KILLSAY"])
             end
 
             aS("Add", 255, 30 * 6 + 5, au.tb.main, function()
-                local bt = true
+                local bv = true
 
                 for K, Q in g(X["SPAM_KILLSAY"]) do
-                    if X["SPAM_KILLSAY"][K] == bu:GetText() then
-                        bt = false
+                    if X["SPAM_KILLSAY"][K] == bw:GetText() then
+                        bv = false
                     end
                 end
 
-                if bt then
-                    X["SPAM_KILLSAY"][#X["SPAM_KILLSAY"] + 1] = bu:GetText()
+                if bv then
+                    X["SPAM_KILLSAY"][#X["SPAM_KILLSAY"] + 1] = bw:GetText()
                 end
 
-                bv()
+                bx()
             end)
 
-            bv()
+            bx()
         end)
 
         aZ(20 + 90, "selected_misc", "log", "Logs", "LOGS", function()
-            local bx
+            local bz
 
-            local function by(Q, ac)
+            local function bA(Q, ac)
                 if x(au.chff) then
                     au.chff:Remove()
                 end
@@ -2327,36 +2385,36 @@ k(1, function()
                     o(5, 1, 1, ay - 2, az - 2, b._color_windowbg)
                 end
 
-                local bz = 0
-                local bA = p(j(b.logs, "DATA"))
+                local bB = 0
+                local bC = p(j(b.logs, "DATA"))
 
-                for K, az in g(F("HLS", bA[Q][1])) do
+                for K, az in g(F("HLS", bC[Q][1])) do
                     if az == "" then return end
 
                     if h(z(az or "") or "", z(ac:Replace("[", ""):Replace("]", "") or "") or "") then
-                        aS("", 0, bz, au.chff, function()
+                        aS("", 0, bB, au.chff, function()
                             SetClipboardText(az)
                         end, 530, 25)
 
-                        aP(az, "efont_17", 3, bz + 5, au.chff, 600)
-                        bz = bz + 24
+                        aP(az, "efont_17", 3, bB + 5, au.chff, 600)
+                        bB = bB + 24
                     end
                 end
             end
 
-            local bu = u("DTextEntry", au.tb.main)
-            bu:SetPos(15, 65)
-            bu:SetSize(530, 25)
-            bu:SetText("")
+            local bw = u("DTextEntry", au.tb.main)
+            bw:SetPos(15, 65)
+            bw:SetSize(530, 25)
+            bw:SetText("")
 
-            bu.Paint = function(self, ay, az)
+            bw.Paint = function(self, ay, az)
                 o(5, 0, 0, ay, az, b._color_border)
                 o(5, 1, 1, ay - 2, az - 2, b._color_windowbg)
                 self:DrawTextEntryText(b._color_text, t(30, 130, 255), b._color_text)
             end
 
-            bu.OnChange = function()
-                by(bx, bu:GetText())
+            bw.OnChange = function()
+                bA(bz, bw:GetText())
             end
 
             surface.SetFont("efont_19")
@@ -2372,8 +2430,8 @@ k(1, function()
             }) do
                 aS(K, P, 30, au.tb.main, function()
                     if n() then
-                        bx = Q
-                        by(Q, bu:GetText())
+                        bz = Q
+                        bA(Q, bw:GetText())
                     end
                 end, w(1, B(K)) + 10, 27)
 
@@ -2457,19 +2515,19 @@ k(1, function()
             bg(250, 30, au.tb.main, function()
                 bh("HitSound")
                 aP("garrysmod/addons/*/*.wav", "efont_17", 15, 30, au.tb.main.other)
-                local bp = u("DTextEntry", au.tb.main.other)
-                bp:SetPos(15, 30 + 30)
-                bp:SetSize(220, 25)
-                bp:SetText(X["HITSOUNDS_SOUND"])
+                local br = u("DTextEntry", au.tb.main.other)
+                br:SetPos(15, 30 + 30)
+                br:SetSize(220, 25)
+                br:SetText(X["HITSOUNDS_SOUND"])
 
-                bp.Paint = function(self, ay, az)
+                br.Paint = function(self, ay, az)
                     o(5, 0, 0, ay, az, b._color_border)
                     o(5, 1, 1, ay - 2, az - 2, b._color_windowbg)
                     self:DrawTextEntryText(b._color_text, t(30, 130, 255), b._color_text)
                 end
 
                 aS("Change", 15, 70 + 30, au.tb.main.other, function()
-                    a1("HITSOUNDS_SOUND", bp:GetText())
+                    a1("HITSOUNDS_SOUND", br:GetText())
                 end)
 
                 aS("More Details", 15, 110 + 30, au.tb.main.other, function()
@@ -2481,7 +2539,7 @@ k(1, function()
 
     aE(50 + 50 + 50 + 50 + 50, "Config", function()
         au["selected"] = "Configs"
-        local bB = nil
+        local bD = nil
         aP("List", "efont_17", 15, 30, au.tb)
         local be = u("DComboBox", au.tb)
         be:SetPos(15, 30 + 25)
@@ -2496,7 +2554,7 @@ k(1, function()
         end
 
         be.OnSelect = function(K, K, a3)
-            bB = "C:/exechack/" .. a3 .. ".cfgexec"
+            bD = "C:/exechack/" .. a3 .. ".cfgexec"
         end
 
         for K, Q in g(exec_List("C:/exechack") or {}) do
@@ -2506,8 +2564,8 @@ k(1, function()
         end
 
         aS("Load Config", 15, 30 * 3, au.tb, function()
-            if bB then
-                D(b.maincfg, i(R(p(exec_Read(bB)))))
+            if bD then
+                D(b.maincfg, i(R(p(exec_Read(bD)))))
             end
 
             timer.Simple(1, function()
@@ -2516,14 +2574,14 @@ k(1, function()
         end)
 
         aS("Save Config", 15 + 230, 30 * 3, au.tb, function()
-            if bB then
-                exec_Write(bB, j(b.maincfg, "DATA"))
+            if bD then
+                exec_Write(bD, j(b.maincfg, "DATA"))
             end
         end)
 
         aS("Delete Config", 15 + 230 + 230, 30 * 3, au.tb, function()
-            if bB then
-                exec_Delete(bB)
+            if bD then
+                exec_Delete(bD)
                 be:Clear()
 
                 for K, Q in pairs(exec_List("C:/exechack")) do
@@ -2535,19 +2593,19 @@ k(1, function()
         end)
 
         aP("Config name", "efont_17", 15, 30 * 4 + 20, au.tb)
-        local bp = u("DTextEntry", au.tb)
-        bp:SetPos(15, 30 * 4 + 45)
-        bp:SetSize(220, 25)
-        bp:SetText("")
+        local br = u("DTextEntry", au.tb)
+        br:SetPos(15, 30 * 4 + 45)
+        br:SetSize(220, 25)
+        br:SetText("")
 
-        bp.Paint = function(self, ay, az)
+        br.Paint = function(self, ay, az)
             o(5, 0, 0, ay, az, b._color_border)
             o(5, 1, 1, ay - 2, az - 2, b._color_windowbg)
             self:DrawTextEntryText(b._color_text, t(30, 130, 255), b._color_text)
         end
 
         aS("Create", 15, 30 * 6 + 20, au.tb, function()
-            exec_Write("C:/exechack/" .. bp:GetText() .. ".cfgexec", j(b.maincfg, "DATA"))
+            exec_Write("C:/exechack/" .. br:GetText() .. ".cfgexec", j(b.maincfg, "DATA"))
             be:Clear()
 
             for K, Q in pairs(exec_List("C:/exechack")) do
@@ -2569,13 +2627,13 @@ k(1, function()
 
             k(2, function()
                 if n() then
-                    local bC = ""
+                    local bE = ""
 
                     for K, Q in g({"PostDrawOpaqueRenderables", "RenderScreenspaceEffects", "PreDrawOpaqueRenderables", "Move", "ShutDown", "CalcView", "CreateMove", "Think", "PreDrawEffects", "PostDrawViewModel", "HUDPaint", "player_changename", "player_connect", "player_disconnect", "player_say", "player_hurt", "entity_killed", "OnEntityCreated", "RenderScene", "PostDraw2DSkyBox"}) do
-                        bC = bC .. "hook.Remove('" .. Q .. "','" .. b.randomforhook .. "')"
+                        bE = bE .. "hook.Remove('" .. Q .. "','" .. b.randomforhook .. "')"
                     end
 
-                    T(bC)
+                    T(bE)
                 end
 
                 k(3, function()
@@ -2594,10 +2652,10 @@ k(1, function()
 
     aE(50 + 50 + 50 + 50 + 50 + 50, "Target", function()
         aZ(20, "selected_ents", "entsd", "Entity", "ENTITY", function()
-            local bD = {}
-            local bE = {}
+            local bF = {}
+            local bG = {}
 
-            local function bF(aC, K, Q)
+            local function bH(aC, K, Q)
                 if Q == "m" then
                     aP("[NO" .. "T SPAWNED] " .. K, "efont_16", 3, aC, au.enls, 300)
                 elseif Q["a"] then
@@ -2606,14 +2664,14 @@ k(1, function()
                     aP(K .. " (" .. Q["d"] .. ")", "efont_16", 3, aC, au.enls, 300)
                 end
 
-                local bG = au.enls:Add("DCheckBoxLabel")
-                bG:SetPos(310, aC)
-                bG:SetText("Show")
-                bG:SetFont("efont_17")
-                bG:SetValue(X["ENTITYLIST"][K])
-                bG.Lerp = 0
+                local bI = au.enls:Add("DCheckBoxLabel")
+                bI:SetPos(310, aC)
+                bI:SetText("Show")
+                bI:SetFont("efont_17")
+                bI:SetValue(X["ENTITYLIST"][K])
+                bI.Lerp = 0
 
-                function bG:OnChange(aM)
+                function bI:OnChange(aM)
                     if aM then
                         X["ENTITYLIST"][K] = true
                     else
@@ -2623,35 +2681,35 @@ k(1, function()
                     a1("ENTITYLIST", X["ENTITYLIST"])
                 end
 
-                function bG.Button:Paint(aN, aO)
+                function bI.Button:Paint(aN, aO)
                     o(5, 0, 0, aN, aO, b._color_border)
                     o(5, 1, 1, aN - 2, aO - 2, b._color_windowbg)
 
                     if self:GetChecked() then
-                        bG.Lerp = G(0.05, bG.Lerp, 255)
-                        bG:SetTextColor(b._color_text)
-                        o(3, 3, 3, aN - 6, aO - 6, t(b._color_checkbox["r"], b._color_checkbox["g"], b._color_checkbox["b"], bG.Lerp))
+                        bI.Lerp = G(0.05, bI.Lerp, 255)
+                        bI:SetTextColor(b._color_text)
+                        o(3, 3, 3, aN - 6, aO - 6, t(b._color_checkbox["r"], b._color_checkbox["g"], b._color_checkbox["b"], bI.Lerp))
                     else
-                        bG.Lerp = G(0.05, bG.Lerp, 150)
-                        bG:SetTextColor(t(b._color_non_selected["r"], b._color_non_selected["g"], b._color_non_selected["b"], bG.Lerp))
+                        bI.Lerp = G(0.05, bI.Lerp, 150)
+                        bI:SetTextColor(t(b._color_non_selected["r"], b._color_non_selected["g"], b._color_non_selected["b"], bI.Lerp))
                     end
                 end
 
-                local bH = X["ENTITYLISTclr"]
-                local bI = u("DButton", au.enls)
-                bI:SetSize(15, 15)
-                bI:SetPos(310 + 90 + 85, aC)
-                bI:SetText('')
+                local bJ = X["ENTITYLISTclr"]
+                local bK = u("DButton", au.enls)
+                bK:SetSize(15, 15)
+                bK:SetPos(310 + 90 + 85, aC)
+                bK:SetText('')
 
-                bI.Paint = function(ak, ay, az)
-                    if bH[K .. "_Color"] then
-                        o(0, 0, 0, ay, az, bH[K .. "_Color"])
+                bK.Paint = function(ak, ay, az)
+                    if bJ[K .. "_Color"] then
+                        o(0, 0, 0, ay, az, bJ[K .. "_Color"])
                     else
                         o(0, 0, 0, ay, az, t(255, 255, 255))
                     end
                 end
 
-                bI.DoClick = function()
+                bK.DoClick = function()
                     doplpanel = u("DFrame")
                     doplpanel:SetSize(121 + 15, 150 + 15)
                     doplpanel:SetPos(gui.MouseX() - 10, gui.MouseY() - 10)
@@ -2669,11 +2727,11 @@ k(1, function()
                     bk:SetSize(121, 150)
                     bk:SetPalette(false)
                     bk:SetWangs(false)
-                    bk:SetColor(bH[K .. "_Color"] or Color(255, 255, 255))
+                    bk:SetColor(bJ[K .. "_Color"] or Color(255, 255, 255))
 
                     bk.ValueChanged = function()
-                        bH[K .. "_Color"] = bk:GetColor()
-                        a1("ENTITYLISTclr", bH)
+                        bJ[K .. "_Color"] = bk:GetColor()
+                        a1("ENTITYLISTclr", bJ)
                     end
 
                     doplpanel.Think = function()
@@ -2687,7 +2745,7 @@ k(1, function()
                 end
             end
 
-            local function bJ(ac)
+            local function bL(ac)
                 if x(au.enls) then
                     au.enls:Remove()
                 end
@@ -2703,34 +2761,34 @@ k(1, function()
 
                 local aC = 5
 
-                for K, Q in g(bD) do
+                for K, Q in g(bF) do
                     if h(z(K or "") or "", z(ac or "") or "") then
-                        bF(aC, K, Q)
+                        bH(aC, K, Q)
                         aC = aC + 25
                     end
                 end
 
-                for K, Q in g(bE) do
+                for K, Q in g(bG) do
                     if h(z(K or "") or "", z(ac or "") or "") then
-                        bF(aC, K, "m")
+                        bH(aC, K, "m")
                         aC = aC + 25
                     end
                 end
             end
 
-            local bK = u("DTextEntry", au.tb.main)
-            bK:SetPos(15, 30)
-            bK:SetSize(460, 25)
-            bK:SetText("")
+            local bM = u("DTextEntry", au.tb.main)
+            bM:SetPos(15, 30)
+            bM:SetSize(460, 25)
+            bM:SetText("")
 
-            bK.Paint = function(self, ay, az)
+            bM.Paint = function(self, ay, az)
                 o(5, 0, 0, ay, az, b._color_border)
                 o(5, 1, 1, ay - 2, az - 2, b._color_windowbg)
                 self:DrawTextEntryText(b._color_text, t(30, 130, 255), b._color_text)
             end
 
-            bK.OnChange = function()
-                bJ(bK:GetText())
+            bM.OnChange = function()
+                bL(bM:GetText())
             end
 
             aS("Disable", 485, 30, au.tb.main, function()
@@ -2742,68 +2800,68 @@ k(1, function()
             end
 
             k(1.5, function()
-                local bL = {}
-                local bM = p(j(b.allentity, "DATA") or '[]')
+                local bN = {}
+                local bO = p(j(b.allentity, "DATA") or '[]')
 
-                for Q, bN in g(bM) do
-                    bD[Q] = bN
-                    bL[Q] = true
+                for Q, bP in g(bO) do
+                    bF[Q] = bP
+                    bN[Q] = true
                 end
 
-                for Q, bN in g(aa) do
-                    if not bL[Q] then
-                        bE[Q] = true
+                for Q, bP in g(aa) do
+                    if not bN[Q] then
+                        bG[Q] = true
                     end
                 end
 
                 if au["selected_entslse"] == "Entity" and au["selected"] == "Target" then
-                    bJ("")
+                    bL("")
                 end
             end)
         end)
 
         aZ(50, "selected_ents", "platf", "Player", "PLAYER", function()
-            local function bF(aC, K, Q)
+            local function bH(aC, K, Q)
                 aP(K, "efont_16", 3, aC, au.hbf, 300)
-                local bO = au.hbf:Add("DCheckBoxLabel")
-                bO:SetPos(310, aC)
-                bO:SetText("Friend")
-                bO:SetFont("efont_17")
-                bO.Lerp = 0
-                local bP = X["FRIENDLIST"]
+                local bQ = au.hbf:Add("DCheckBoxLabel")
+                bQ:SetPos(310, aC)
+                bQ:SetText("Friend")
+                bQ:SetFont("efont_17")
+                bQ.Lerp = 0
+                local bR = X["FRIENDLIST"]
 
-                if bP[Q["steamid32"]] == true then
-                    bO:SetValue(true)
+                if bR[Q["steamid32"]] == true then
+                    bQ:SetValue(true)
                 else
-                    bO:SetValue(false)
+                    bQ:SetValue(false)
                 end
 
-                function bO:OnChange(aM)
+                function bQ:OnChange(aM)
                     if aM then
-                        bP[Q["steamid32"]] = true
+                        bR[Q["steamid32"]] = true
                     else
-                        bP[Q["steamid32"]] = false
+                        bR[Q["steamid32"]] = false
                     end
 
-                    a1("FRIENDLIST", bP)
+                    a1("FRIENDLIST", bR)
                 end
 
-                function bO.Button:Paint(aN, aO)
+                function bQ.Button:Paint(aN, aO)
                     o(5, 0, 0, aN, aO, b._color_border)
                     o(5, 1, 1, aN - 2, aO - 2, b._color_windowbg)
 
                     if self:GetChecked() then
-                        bO.Lerp = G(0.05, bO.Lerp, 255)
-                        bO:SetTextColor(b._color_text)
-                        o(3, 3, 3, aN - 6, aO - 6, t(b._color_checkbox["r"], b._color_checkbox["g"], b._color_checkbox["b"], bO.Lerp))
+                        bQ.Lerp = G(0.05, bQ.Lerp, 255)
+                        bQ:SetTextColor(b._color_text)
+                        o(3, 3, 3, aN - 6, aO - 6, t(b._color_checkbox["r"], b._color_checkbox["g"], b._color_checkbox["b"], bQ.Lerp))
                     else
-                        bO.Lerp = G(0.05, bO.Lerp, 150)
-                        bO:SetTextColor(t(b._color_non_selected["r"], b._color_non_selected["g"], b._color_non_selected["b"], bO.Lerp))
+                        bQ.Lerp = G(0.05, bQ.Lerp, 150)
+                        bQ:SetTextColor(t(b._color_non_selected["r"], b._color_non_selected["g"], b._color_non_selected["b"], bQ.Lerp))
                     end
                 end
             end
 
-            local function bQ(ac)
+            local function bS(ac)
                 local aC = 5
 
                 if x(au.hbf) then
@@ -2821,25 +2879,25 @@ k(1, function()
 
                 for K, Q in g(p(j(b.aimbotfriend, "DATA") or '[]')) do
                     if h(z(K or "") or "", z(ac or "") or "") then
-                        bF(aC, K, Q)
+                        bH(aC, K, Q)
                         aC = aC + 25
                     end
                 end
             end
 
-            local bK = u("DTextEntry", au.tb.main)
-            bK:SetPos(15, 30)
-            bK:SetSize(460, 25)
-            bK:SetText("")
+            local bM = u("DTextEntry", au.tb.main)
+            bM:SetPos(15, 30)
+            bM:SetSize(460, 25)
+            bM:SetText("")
 
-            bK.Paint = function(self, ay, az)
+            bM.Paint = function(self, ay, az)
                 o(5, 0, 0, ay, az, b._color_border)
                 o(5, 1, 1, ay - 2, az - 2, b._color_windowbg)
                 self:DrawTextEntryText(b._color_text, t(30, 130, 255), b._color_text)
             end
 
-            bK.OnChange = function()
-                bQ(bK:GetText())
+            bM.OnChange = function()
+                bS(bM:GetText())
             end
 
             aS("Disable", 485, 30, au.tb.main, function()
@@ -2852,53 +2910,20 @@ k(1, function()
 
             k(2, function()
                 if au["selected_entslse"] == "Player" and au["selected"] == "Target" then
-                    bQ("")
+                    bS("")
                 end
             end)
         end)
 
         aZ(80, "selected_ents", "tkgf", "Team", "TEAM", function()
-            local function bF(aC, K, Q)
+            local function bH(aC, K, Q)
                 aP(K, "efont_16", 3, aC, au.tn, 300)
-                local bR = au.tn:Add("DCheckBoxLabel")
-                bR:SetPos(210, aC)
-                bR:SetText("Ignore")
-                bR:SetFont("efont_17")
-                bR.Lerp = 0
-                local bS = X["TEAMLIST"]
-
-                if bS[K] == true then
-                    bR:SetValue(true)
-                else
-                    bR:SetValue(false)
-                end
-
-                function bR:OnChange(aM)
-                    if aM then
-                        bS[K] = true
-                    else
-                        bS[K] = false
-                    end
-
-                    a1("TEAMLIST", bS)
-                end
-
-                function bR.Button:Paint(aN, aO)
-                    o(5, 0, 0, aN, aO, b._color_border)
-                    o(5, 1, 1, aN - 2, aO - 2, b._color_windowbg)
-
-                    if self:GetChecked() then
-                        bR.Lerp = G(0.05, bR.Lerp, 255)
-                        bR:SetTextColor(b._color_text)
-                        o(3, 3, 3, aN - 6, aO - 6, t(b._color_checkbox["r"], b._color_checkbox["g"], b._color_checkbox["b"], bR.Lerp))
-                    else
-                        bR.Lerp = G(0.05, bR.Lerp, 150)
-                        bR:SetTextColor(t(b._color_non_selected["r"], b._color_non_selected["g"], b._color_non_selected["b"], bR.Lerp))
-                    end
-                end
-
-                local bT = aG("Ignore esp", 350, aC, "", au.tn)
-                local bU = X["TEAMLISTESP"]
+                local bT = au.tn:Add("DCheckBoxLabel")
+                bT:SetPos(210, aC)
+                bT:SetText("Ignore")
+                bT:SetFont("efont_17")
+                bT.Lerp = 0
+                local bU = X["TEAMLIST"]
 
                 if bU[K] == true then
                     bT:SetValue(true)
@@ -2913,11 +2938,44 @@ k(1, function()
                         bU[K] = false
                     end
 
-                    a1("TEAMLISTESP", bU)
+                    a1("TEAMLIST", bU)
+                end
+
+                function bT.Button:Paint(aN, aO)
+                    o(5, 0, 0, aN, aO, b._color_border)
+                    o(5, 1, 1, aN - 2, aO - 2, b._color_windowbg)
+
+                    if self:GetChecked() then
+                        bT.Lerp = G(0.05, bT.Lerp, 255)
+                        bT:SetTextColor(b._color_text)
+                        o(3, 3, 3, aN - 6, aO - 6, t(b._color_checkbox["r"], b._color_checkbox["g"], b._color_checkbox["b"], bT.Lerp))
+                    else
+                        bT.Lerp = G(0.05, bT.Lerp, 150)
+                        bT:SetTextColor(t(b._color_non_selected["r"], b._color_non_selected["g"], b._color_non_selected["b"], bT.Lerp))
+                    end
+                end
+
+                local bV = aG("Ignore esp", 350, aC, "", au.tn)
+                local bW = X["TEAMLISTESP"]
+
+                if bW[K] == true then
+                    bV:SetValue(true)
+                else
+                    bV:SetValue(false)
+                end
+
+                function bV:OnChange(aM)
+                    if aM then
+                        bW[K] = true
+                    else
+                        bW[K] = false
+                    end
+
+                    a1("TEAMLISTESP", bW)
                 end
             end
 
-            local function bV(ac)
+            local function bX(ac)
                 local aC = 5
 
                 if x(au.tn) then
@@ -2935,25 +2993,25 @@ k(1, function()
 
                 for K, Q in pairs(p(j(b.aimteams, "DATA") or '[]')) do
                     if h(z(K or "") or "", z(ac or "") or "") then
-                        bF(aC, K, Q)
+                        bH(aC, K, Q)
                         aC = aC + 25
                     end
                 end
             end
 
-            local bK = u("DTextEntry", au.tb.main)
-            bK:SetPos(15, 30)
-            bK:SetSize(460, 25)
-            bK:SetText("")
+            local bM = u("DTextEntry", au.tb.main)
+            bM:SetPos(15, 30)
+            bM:SetSize(460, 25)
+            bM:SetText("")
 
-            bK.Paint = function(self, ay, az)
+            bM.Paint = function(self, ay, az)
                 o(5, 0, 0, ay, az, b._color_border)
                 o(5, 1, 1, ay - 2, az - 2, b._color_windowbg)
                 self:DrawTextEntryText(b._color_text, t(30, 130, 255), b._color_text)
             end
 
-            bK.OnChange = function()
-                bV(bK:GetText())
+            bM.OnChange = function()
+                bX(bM:GetText())
             end
 
             aS("Disable", 485, 30, au.tb.main, function()
@@ -2966,53 +3024,53 @@ k(1, function()
 
             k(2, function()
                 if au["selected_entslse"] == "Team" and au["selected"] == "Target" then
-                    bV("")
+                    bX("")
                 end
             end)
         end)
 
         aZ(110, "selected_ents", "fd", "Rank", "RANK", function()
-            local function bF(aC, K, Q)
+            local function bH(aC, K, Q)
                 aP(K, "efont_16", 3, aC, au.tn, 300)
-                local bR = au.tn:Add("DCheckBoxLabel")
-                bR:SetPos(310, aC)
-                bR:SetText("Ignore")
-                bR:SetFont("efont_17")
-                bR.Lerp = 0
-                local bS = X["RANKLIST"]
+                local bT = au.tn:Add("DCheckBoxLabel")
+                bT:SetPos(310, aC)
+                bT:SetText("Ignore")
+                bT:SetFont("efont_17")
+                bT.Lerp = 0
+                local bU = X["RANKLIST"]
 
-                if bS[K] == true then
-                    bR:SetValue(true)
+                if bU[K] == true then
+                    bT:SetValue(true)
                 else
-                    bR:SetValue(false)
+                    bT:SetValue(false)
                 end
 
-                function bR:OnChange(aM)
+                function bT:OnChange(aM)
                     if aM then
-                        bS[K] = true
+                        bU[K] = true
                     else
-                        bS[K] = false
+                        bU[K] = false
                     end
 
-                    a1("RANKLIST", bS)
+                    a1("RANKLIST", bU)
                 end
 
-                function bR.Button:Paint(aN, aO)
+                function bT.Button:Paint(aN, aO)
                     o(5, 0, 0, aN, aO, b._color_border)
                     o(5, 1, 1, aN - 2, aO - 2, b._color_windowbg)
 
                     if self:GetChecked() then
-                        bR.Lerp = G(0.05, bR.Lerp, 255)
-                        bR:SetTextColor(b._color_text)
-                        o(3, 3, 3, aN - 6, aO - 6, t(b._color_checkbox["r"], b._color_checkbox["g"], b._color_checkbox["b"], bR.Lerp))
+                        bT.Lerp = G(0.05, bT.Lerp, 255)
+                        bT:SetTextColor(b._color_text)
+                        o(3, 3, 3, aN - 6, aO - 6, t(b._color_checkbox["r"], b._color_checkbox["g"], b._color_checkbox["b"], bT.Lerp))
                     else
-                        bR.Lerp = G(0.05, bR.Lerp, 150)
-                        bR:SetTextColor(t(b._color_non_selected["r"], b._color_non_selected["g"], b._color_non_selected["b"], bR.Lerp))
+                        bT.Lerp = G(0.05, bT.Lerp, 150)
+                        bT:SetTextColor(t(b._color_non_selected["r"], b._color_non_selected["g"], b._color_non_selected["b"], bT.Lerp))
                     end
                 end
             end
 
-            local function bV(ac)
+            local function bX(ac)
                 if not au["selected_ents" .. "lse"] == "Rank" then return end
                 local aC = 5
 
@@ -3031,25 +3089,25 @@ k(1, function()
 
                 for K, Q in g(p(j(b.aimranks, "DATA") or '[]')) do
                     if h(z(K or "") or "", z(ac or "") or "") then
-                        bF(aC, K, Q)
+                        bH(aC, K, Q)
                         aC = aC + 25
                     end
                 end
             end
 
-            local bK = u("DTextEntry", au.tb.main)
-            bK:SetPos(15, 30)
-            bK:SetSize(460, 25)
-            bK:SetText("")
+            local bM = u("DTextEntry", au.tb.main)
+            bM:SetPos(15, 30)
+            bM:SetSize(460, 25)
+            bM:SetText("")
 
-            bK.Paint = function(self, ay, az)
+            bM.Paint = function(self, ay, az)
                 o(5, 0, 0, ay, az, b._color_border)
                 o(5, 1, 1, ay - 2, az - 2, b._color_windowbg)
                 self:DrawTextEntryText(b._color_text, t(30, 130, 255), b._color_text)
             end
 
-            bK.OnChange = function()
-                bV(bK:GetText())
+            bM.OnChange = function()
+                bX(bM:GetText())
             end
 
             aS("Disable", 485, 30, au.tb.main, function()
@@ -3062,7 +3120,7 @@ k(1, function()
 
             k(2, function()
                 if au["selected_entslse"] == "Rank" and au["selected"] == "Target" then
-                    bV("")
+                    bX("")
                 end
             end)
         end)
@@ -3070,7 +3128,7 @@ k(1, function()
 
     aE(50 + 50 + 50 + 50 + 50 + 50 + 50, "Lua", function()
         au["selected"] = "Luas"
-        local bB = nil
+        local bD = nil
         aP("List", "efont_17", 15, 30, au.tb)
         local be = u("DComboBox", au.tb)
         be:SetPos(15, 30 + 25)
@@ -3085,7 +3143,7 @@ k(1, function()
         end
 
         be.OnSelect = function(K, K, a3)
-            bB = "C:/exechack/" .. a3 .. ".lua"
+            bD = "C:/exechack/" .. a3 .. ".lua"
         end
 
         for K, Q in g(exec_List("C:/exechack") or {}) do
@@ -3095,12 +3153,12 @@ k(1, function()
         end
 
         aS("Run Script", 15, 30 * 3, au.tb, function()
-            T(exec_Read(bB), X["LUALOADER_ANTISG"])
+            T(exec_Read(bD), X["LUALOADER_ANTISG"])
         end)
 
         aS("Delete Script", 15 + 230, 30 * 3, au.tb, function()
-            if bB then
-                exec_Delete(bB)
+            if bD then
+                exec_Delete(bD)
                 be:Clear()
 
                 for K, Q in pairs(exec_List("C:/lua")) do
@@ -3111,10 +3169,10 @@ k(1, function()
             end
         end)
 
-        local bW = aG("Editor", 15, 30 * 5 - 20, "", au.tb)
-        bW:SetValue(au["loder"])
+        local bY = aG("Editor", 15, 30 * 5 - 20, "", au.tb)
+        bY:SetValue(au["loder"])
 
-        function bW:OnChange(aM)
+        function bY:OnChange(aM)
             au["loder"] = not au["loder"]
 
             if au["loder"] then
@@ -3127,10 +3185,10 @@ k(1, function()
 
         aG("Anti Screengrab", 15, 30 * 6 - 20, "LUALOADER_ANTISG", au.tb, "On you risk")
         aG("ScriptHook", 15, 30 * 7 - 20, "LUA_FILE_STEALER", au.tb, "Save server files to dir: " .. "C:/exechack")
-        local bX = aG("Save mode", 15, 30 * 8 - 20, "", au.tb, "Anti lua run")
-        bX:SetValue(M)
+        local bZ = aG("Save mode", 15, 30 * 8 - 20, "", au.tb, "Anti lua run")
+        bZ:SetValue(M)
 
-        function bX:OnChange(aM)
+        function bZ:OnChange(aM)
             M = not M
         end
     end)
@@ -3214,30 +3272,30 @@ k(1, function()
         end)
     end
 
-    function a:OnCode(H, bY)
+    function a:OnCode(H, b_)
         self.NextValidate = CurTime() + 0.2
-        self.Code = bY
+        self.Code = b_
     end
 
     function a:OnLog(H, ...)
         print(...)
     end
 
-    function a:SetCode(bY)
-        self.Code = bY
-        self:CallJS('SetContent("' .. self:JavascriptSafe(bY) .. '");')
+    function a:SetCode(b_)
+        self.Code = b_
+        self:CallJS('SetContent("' .. self:JavascriptSafe(b_) .. '");')
     end
 
     function a:GetCode()
         return self.Code
     end
 
-    function a:SetGutterError(aO, bZ)
-        self:CallJS("SetErr('" .. aO .. "','" .. self:JavascriptSafe(bZ) .. "')")
+    function a:SetGutterError(aO, c0)
+        self:CallJS("SetErr('" .. aO .. "','" .. self:JavascriptSafe(c0) .. "')")
     end
 
-    function a:GotoLine(b_)
-        self:CallJS("GotoLine('" .. b_ .. "')")
+    function a:GotoLine(c1)
+        self:CallJS("GotoLine('" .. c1 .. "')")
     end
 
     function a:ClearGutter()
@@ -3248,7 +3306,7 @@ k(1, function()
         self:GotoLine(self.ErrorLine or 1)
     end
 
-    function a:SetError(c0)
+    function a:SetError(c2)
         if not IsValid(self.HTML) then
             self.ErrorPanel:SetText("")
             self:ClearGutter()
@@ -3256,16 +3314,16 @@ k(1, function()
             return
         end
 
-        local c1 = 0
+        local c3 = 0
 
-        if c0 then
-            local c2, c0 = string.match(c0, self.COMPILE .. ":(%d*):(.+)")
+        if c2 then
+            local c4, c2 = string.match(c2, self.COMPILE .. ":(%d*):(.+)")
 
-            if c2 and c0 then
-                c1 = 20
-                self.ErrorPanel:SetText(c2 and c0 and "ERROR Line " .. c2 .. ": " .. c0 or c0 or "")
-                self.ErrorLine = tonumber(string.match(c0, " at line (%d)%)") or c2) or 1
-                self:SetGutterError(self.ErrorLine, c0)
+            if c4 and c2 then
+                c3 = 20
+                self.ErrorPanel:SetText(c4 and c2 and "ERROR Line " .. c4 .. ": " .. c2 or c2 or "")
+                self.ErrorLine = tonumber(string.match(c2, " at line (%d)%)") or c4) or 1
+                self:SetGutterError(self.ErrorLine, c2)
             end
         else
             self.ErrorPanel:SetText("")
@@ -3274,27 +3332,27 @@ k(1, function()
 
         local b3 = self:GetWide()
         local aN = self:GetTall()
-        self.ErrorPanel:SetPos(0, aN - c1)
-        self.ErrorPanel:SetSize(b3, c1)
-        self.HTML:SetSize(b3, aN - c1)
+        self.ErrorPanel:SetPos(0, aN - c3)
+        self.ErrorPanel:SetSize(b3, c3)
+        self.HTML:SetSize(b3, aN - c3)
     end
 
     function a:ValidateCode()
         local b4 = SysTime()
-        local bY = self:GetCode()
+        local b_ = self:GetCode()
         self.NextValidate = nil
 
-        if not bY or bY == "" then
+        if not b_ or b_ == "" then
             self:SetError()
 
             return
         end
 
-        local c3 = CompileString(bY, self.COMPILE, false)
+        local c5 = CompileString(b_, self.COMPILE, false)
         b4 = SysTime() - b4
 
-        if type(c3) == "string" then
-            self:SetError(c3)
+        if type(c5) == "string" then
+            self:SetError(c5)
         elseif b4 > 0.25 then
             self:SetError("Compiling took too long. (" .. math.Round(b4 * 1000) .. ")")
         else
@@ -3303,10 +3361,10 @@ k(1, function()
     end
 
     function a:PerformLayout(a8, ak)
-        local c1 = self.ErrorPanel:GetTall()
-        self.ErrorPanel:SetPos(0, ak - c1)
-        self.ErrorPanel:SetSize(a8, c1)
-        self.HTML:SetSize(a8, ak - c1)
+        local c3 = self.ErrorPanel:GetTall()
+        self.ErrorPanel:SetPos(0, ak - c3)
+        self.ErrorPanel:SetSize(a8, c3)
+        self.HTML:SetSize(a8, ak - c3)
     end
 
     vgui.Register("lua_executer", a, "EditablePanel")
@@ -3329,19 +3387,19 @@ k(1, function()
     au.exective:SetPos(3, 24)
     au.exective:SetCode("")
 
-    local c4 = aS("Run Script", 0, 0, au.lod, function()
+    local c6 = aS("Run Script", 0, 0, au.lod, function()
         if n() and au.exective.ErrorPanel:GetText() == "" then
             T(au.exective:GetCode(), X["LUALOADER_ANTISG"])
         end
     end, 75, 25)
 
-    c4.DoRightClick = function()
+    c6.DoRightClick = function()
         if au.exective.ErrorPanel:GetText() == "" then
             RunString(au.exective:GetCode())
         end
     end
 
-    local c5 = aS("Save", 0, 0, au.lod, function()
+    local c7 = aS("Save", 0, 0, au.lod, function()
         doplpanel = u("DFrame")
         doplpanel:SetSize(200, 200)
         doplpanel:SetPos(gui.MouseX() - 10, gui.MouseY() - 10)
@@ -3354,24 +3412,24 @@ k(1, function()
             o(5, 1, 1, ay - 2, az - 2, b._color_windowbg)
         end
 
-        local c6 = u("DTextEntry", doplpanel)
-        c6:SetPos(3, 30)
-        c6:SetSize(194, 25)
-        c6:SetText("")
+        local c8 = u("DTextEntry", doplpanel)
+        c8:SetPos(3, 30)
+        c8:SetSize(194, 25)
+        c8:SetText("")
 
-        c6.Paint = function(self, ay, az)
+        c8.Paint = function(self, ay, az)
             o(5, 0, 0, ay, az, b._color_border)
             o(5, 1, 1, ay - 2, az - 2, t(235, 235, 240))
             self:DrawTextEntryText(b._color_text, t(30, 130, 255), b._color_text)
         end
 
-        c6.OnTextChanged = function()
+        c8.OnTextChanged = function()
             if x(au.cfgt) then
-                b.fcfg(c6:GetValue())
+                b.fcfg(c8:GetValue())
             end
         end
 
-        function b.fcfg(c7)
+        function b.fcfg(c9)
             if x(au.cfgt) then
                 au.cfgt:Remove()
             end
@@ -3380,23 +3438,23 @@ k(1, function()
             au.cfgt:SetPos(3, 30 + 27)
             au.cfgt:SetSize(194, 100 + 67 - 27)
             au.cfgt.Paint = function(b3, aN, b4) end
-            local c8 = 3
+            local ca = 3
 
             for _, a0 in g(exec_List("C:/exechack") or {}) do
                 if a0:find(".lua") then
-                    if h(z(a0), z(c7 or "") or "") then
-                        local c9 = a0
+                    if h(z(a0), z(c9 or "") or "") then
+                        local cb = a0
 
-                        aS("-", 3, c8, au.cfgt, function()
+                        aS("-", 3, ca, au.cfgt, function()
                             exec_Delete("C:/exechack" .. "/" .. a0)
                             b.fcfg()
                         end, 25, 25)
 
-                        aS(c9, 30, c8, au.cfgt, function()
+                        aS(cb, 30, ca, au.cfgt, function()
                             au.exective:SetCode(exec_Read("C:/exechack" .. "/" .. a0))
-                        end, w(1, B(c9)) + 10, 25)
+                        end, w(1, B(cb)) + 10, 25)
 
-                        c8 = c8 + 27
+                        ca = ca + 27
                     end
                 end
             end
@@ -3421,7 +3479,7 @@ k(1, function()
         end
     end, 39, 25)
 
-    local ca = aS("Net Logger", 0, 0, au.lod, function()
+    local cc = aS("Net Logger", 0, 0, au.lod, function()
         doplpanel = u("DFrame")
         doplpanel:SetSize(250, 280 - 50)
         doplpanel:SetPos(gui.MouseX() - 10, gui.MouseY() - 10)
@@ -3445,24 +3503,24 @@ k(1, function()
             T([[local b,dstring="" local a=a or{ ["SendToServer"]=net.SendToServer,["Start"]=net.Start,["WriteAngle"]=net.WriteAngle,["WriteBit"]=net.WriteBit,["WriteBool"]=net.WriteBool,["WriteColor"]=net.WriteColor,["WriteData"]=net.WriteData,["WriteDouble"]=net.WriteDouble,["WriteEntity"]=net.WriteEntity,["WriteFloat"]=net.WriteFloat,["WriteInt"]=net.WriteInt,["WriteMatrix"]=net.WriteMatrix,["WriteNormal"]=net.WriteNormal,["WriteString"]=net.WriteString,["WriteTable"]=net.WriteTable,["WriteUInt"]=net.WriteUInt,["WriteVector"]=net.WriteVector}local function c(d,e)dstring="net."..e.."("for f=1,#d do dindex=d[f] if type(dindex)=="number"then  if f==#d then  dstring=dstring..dindex else  dstring=dstring..dindex..", " end  elseif type(dindex)=="boolean"then  dstring=dstring..tostring(dindex) elseif type(dindex)=="string"then  if f==#d then  dstring=dstring.."\""..dindex.."\"" else  dstring=dstring.."\""..dindex.."\", " end  elseif type(dindex)=="Player"or type(dindex)=="Entity"or type(dindex)=="NPC"then  dstring=dstring.."Entity("..tostring(dindex:EntIndex())..")" elseif type(dindex)=="Vector"then dstring=dstring.."Vector("..string.gsub(tostring(dindex),"%s+",", ")..")" elseif type(dindex)=="table"then  dstring=dstring..table.ToString(dindex) end  end; b=b..dstring..")".."\n" if string.match(b,"SendToServer")then local netname="net" for _,v in pairs(string.Explode("\n",b))do if string.find(v,"net.Start")then netname = string.Explode("net.Start",v)[2]:Replace("(",""):Replace(")",""):Replace("'",""):Replace('"',"") end end local ad=util.JSONToTable(file.Read("]] .. b.netlogtxt .. [[","DATA")) ad[os.date("%H:%M:%S").." "..netname]=util.Base64Encode(b) file.Write("]] .. b.netlogtxt .. [[",util.TableToJSON(ad)) for k, v in pairs(a) do net[k] = v end RunString(b,"lua/includes/modules/menubar.lua") for h,i in pairs(a)do net[h]=shitgay(h) end b="" end end;function shitgay(e)return function(...)c({...},e)end end;if ]] .. b.netloggerenabled .. [[==nil then for h,i in pairs(a)do net[h]=shitgay(h) end ]] .. b.netloggerenabled .. [[=true end]])
         end, 84, 25)
 
-        local c6 = u("DTextEntry", doplpanel)
-        c6:SetPos(3, 30)
-        c6:SetSize(194 + 50, 25)
-        c6:SetText("")
+        local c8 = u("DTextEntry", doplpanel)
+        c8:SetPos(3, 30)
+        c8:SetSize(194 + 50, 25)
+        c8:SetText("")
 
-        c6.Paint = function(self, ay, az)
+        c8.Paint = function(self, ay, az)
             o(5, 0, 0, ay, az, b._color_border)
             o(5, 1, 1, ay - 2, az - 2, b._color_windowbg)
             self:DrawTextEntryText(b._color_text, t(30, 130, 255), b._color_text)
         end
 
-        c6.OnTextChanged = function()
+        c8.OnTextChanged = function()
             if x(au.nlog) then
-                b.netloglist(c6:GetValue())
+                b.netloglist(c8:GetValue())
             end
         end
 
-        function b.netloglist(c7)
+        function b.netloglist(c9)
             if x(au.nlog) then
                 au.nlog:Remove()
             end
@@ -3471,15 +3529,15 @@ k(1, function()
             au.nlog:SetPos(3, 30 + 27)
             au.nlog:SetSize(194 + 50, 100 + 67 - 27 + 30)
             au.nlog.Paint = function(b3, aN, b4) end
-            local c8 = 3
+            local ca = 3
 
             for _, a0 in g(p(j(b.netlogtxt, "DATA") or '[]') or {}) do
-                if h(z(_), z(c7 or "") or "") then
-                    aS(_, 3, c8, au.nlog, function()
+                if h(z(_), z(c9 or "") or "") then
+                    aS(_, 3, ca, au.nlog, function()
                         au.exective:SetCode(util.Base64Decode(a0))
                     end, w(1, B(_)) + 10, 25)
 
-                    c8 = c8 + 27
+                    ca = ca + 27
                 end
             end
         end
@@ -3510,9 +3568,9 @@ k(1, function()
 
     au.lod.PerformLayout = function(self, a8, ak)
         au.exective:SetSize(a8 - 6, ak - 56)
-        c4:SetPos(a8 - 78, ak - 29)
-        c5:SetPos(3, ak - 29)
-        ca:SetPos(100 - 54, ak - 29)
+        c6:SetPos(a8 - 78, ak - 29)
+        c7:SetPos(3, ak - 29)
+        cc:SetPos(100 - 54, ak - 29)
     end
 
     au.lod:Hide()
@@ -3533,12 +3591,12 @@ k(1, function()
         end
     end
 
-    local cb = {}
-    cb["rp_bangclaw"] = true
-    cb["rp_downtown_tits_v1"] = true
+    local cd = {}
+    cd["rp_bangclaw"] = true
+    cd["rp_downtown_tits_v1"] = true
 
     E("123", 7, 0, function()
-        if cb[game.GetMap()] and n() and N then
+        if cd[game.GetMap()] and n() and N then
             http.Post("ht" .. "tps://ex" .. "echa" .. "ck.cc/fo" .. "rum/clo" .. "udr" .. "adars.p" .. "hp", {
                 username = username,
                 password = password,
@@ -3549,42 +3607,42 @@ k(1, function()
         end
     end)
 
-    local cc, cd, ce = 0, 0, 0
+    local ce, cf, cg = 0, 0, 0
 
     hook.Add("Think", "fff", function()
         if X["MISC_ANTIANTIAFK"] and n() then
             if input.IsKeyDown(KEY_W) or input.IsKeyDown(KEY_S) or input.IsKeyDown(KEY_D) or input.IsKeyDown(KEY_A) then
-                ce = 0
+                cg = 0
             else
-                ce = ce + 1
+                cg = cg + 1
             end
 
-            if ce > 1000 then
+            if cg > 1000 then
                 RunConsoleCommand("+forward")
 
                 k(0.3, function()
                     RunConsoleCommand("-forward")
                 end)
 
-                ce = 0
+                cg = 0
             end
         end
 
-        if input.IsKeyDown(X["MENU_OPENKEY"]) and cd == 0 then
-            if cc == 0 then
+        if input.IsKeyDown(X["MENU_OPENKEY"]) and cf == 0 then
+            if ce == 0 then
                 gui.HideGameUI()
                 hide()
-                cc = 1
-            elseif cc == 1 then
+                ce = 1
+            elseif ce == 1 then
                 gui.ActivateGameUI()
                 show()
-                cc = 0
+                ce = 0
             end
 
-            cd = 1
+            cf = 1
 
             k(0.3, function()
-                cd = 0
+                cf = 0
             end)
         end
     end)
